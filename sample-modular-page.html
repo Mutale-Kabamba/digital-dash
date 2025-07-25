@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Dash - Sample Page with Modular Layout</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Poppins', sans-serif;
+        }
+        .glassmorphism {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Container - This will be populated by layout.js -->
+    <div id="navbar"></div>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20 lg:py-32 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="text-center">
+                    <h1 class="font-display text-4xl sm:text-5xl font-bold mb-6">
+                        Modular Layout System
+                    </h1>
+                    <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+                        This page demonstrates the new modular layout system with dynamically loaded navigation and footer components.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="font-display text-3xl font-bold text-gray-900 mb-6">
+                            How It Works
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mt-1">
+                                    <i class="fa-solid fa-1 text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2">Add Container Divs</h3>
+                                    <p class="text-gray-600">Simply add <code class="bg-gray-100 px-2 py-1 rounded">&lt;div id="navbar"&gt;&lt;/div&gt;</code> and <code class="bg-gray-100 px-2 py-1 rounded">&lt;div id="footer"&gt;&lt;/div&gt;</code> to your HTML.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mt-1">
+                                    <i class="fa-solid fa-2 text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2">Include Layout Script</h3>
+                                    <p class="text-gray-600">Add <code class="bg-gray-100 px-2 py-1 rounded">&lt;script src="assets/js/layout.js"&gt;&lt;/script&gt;</code> before closing body tag.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mt-1">
+                                    <i class="fa-solid fa-3 text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2">Automatic Loading</h3>
+                                    <p class="text-gray-600">The script automatically loads and configures the navigation and footer components with proper active states.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                        <h3 class="font-display text-xl font-bold text-gray-900 mb-4">Features</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                <span>Automatic component loading</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                <span>Smart active navigation detection</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                <span>Subdirectory path handling</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                <span>Mobile menu functionality</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                <span>Error handling and fallbacks</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                                <span>No external dependencies</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Container - This will be populated by layout.js -->
+    <div id="footer"></div>
+
+    <!-- Load the layout manager -->
+    <script src="assets/js/layout.js"></script>
+</body>
+</html>

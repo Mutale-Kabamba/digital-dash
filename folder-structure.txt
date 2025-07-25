@@ -1,0 +1,18 @@
+digital-dash/
+├── index.html              # Entry point with redirect
+├── home.html               # Landing/about page
+├── dash.html               # Tools directory
+├── returns.html            # Compliance tools page
+├── tools/
+│   ├── nhima.html          # NHIMA generator
+│   └── napsa.html          # NAPSA generator
+├── assets/
+│   ├── css/
+│   │   └── style.css       # Main stylesheet
+│   ├── js/
+│   │   ├── nhima.js        # NHIMA tool functionality
+│   │   └── napsa.js        # NAPSA tool functionality
+│   └── images/
+│       └── favicon.png     # Site favicon
+├── LICENSE                 # MIT license file
+└── README.md               # Project documentation

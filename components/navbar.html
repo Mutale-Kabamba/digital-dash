@@ -1,0 +1,41 @@
+<!-- Navigation Component -->
+<nav class="fixed top-0 left-0 right-0 bg-white/90 glassmorphism border-b border-gray-200/50 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a href="home.html" class="flex items-center space-x-2" id="logo-link">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-bolt text-white text-sm"></i>
+                    </div>
+                    <span class="font-display font-bold text-xl text-gray-900">Digital Dash</span>
+                </a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="home.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="home">Home</a>
+                <a href="dash.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="dash">Tools</a>
+                <a href="sme.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="sme">Business Tools</a>
+                <a href="returns.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="returns">Compliance</a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="md:hidden">
+                <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 glassmorphism border-t border-gray-200/50">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="home.html" class="mobile-nav-link block px-3 py-2 text-gray-600 hover:text-blue-600 font-medium" data-page="home">Home</a>
+                <a href="dash.html" class="mobile-nav-link block px-3 py-2 text-gray-600 hover:text-blue-600 font-medium" data-page="dash">Tools</a>
+                <a href="sme.html" class="mobile-nav-link block px-3 py-2 text-gray-600 hover:text-blue-600 font-medium" data-page="sme">Business Tools</a>
+                <a href="returns.html" class="mobile-nav-link block px-3 py-2 text-gray-600 hover:text-blue-600 font-medium" data-page="returns">Compliance</a>
+            </div>
+        </div>
+    </div>
+</nav>

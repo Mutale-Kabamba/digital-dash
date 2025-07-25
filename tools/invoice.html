@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice & Quotation Generator – Digital Dash</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Poppins', sans-serif;
+        }
+        .glassmorphism {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Form styling */
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        /* Preview styling */
+        .invoice-preview {
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 800px;
+        }
+        
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .invoice-preview {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Container - Loaded dynamically -->
+    <div id="navbar"></div>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Header Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <div class="float-animation flex justify-center mb-6">
+                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center glassmorphism">
+                            <i class="fa-solid fa-file-invoice text-2xl"></i>
+                        </div>
+                    </div>
+                    <h1 class="font-display text-4xl sm:text-5xl font-bold mb-4">
+                        Invoice & Quotation Generator
+                    </h1>
+                    <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                        Create professional invoices and quotations with automatic calculations, custom branding, and PDF download.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tool Section -->
+        <section class="py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Document Type Toggle -->
+                <div class="mb-8 flex justify-center">
+                    <div class="bg-white rounded-xl p-2 shadow-lg border border-gray-200">
+                        <div class="flex">
+                            <button id="invoiceBtn" onclick="setDocumentType('invoice')" class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 bg-blue-600 text-white">
+                                <i class="fa-solid fa-file-invoice mr-2"></i>Invoice
+                            </button>
+                            <button id="quotationBtn" onclick="setDocumentType('quotation')" class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-600 hover:text-blue-600">
+                                <i class="fa-solid fa-file-lines mr-2"></i>Quotation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Form Section -->
+                    <div class="space-y-6">
+                        <!-- Company Details -->
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fa-solid fa-building mr-2 text-blue-600"></i>
+                                Company Details
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                                    <input type="text" id="companyName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Your Company Name" onchange="updatePreview()">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
+                                    <div class="flex items-center space-x-4">
+                                        <input type="file" id="companyLogo" accept="image/*" class="form-input flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="handleLogoUpload(this)">
+                                        <button type="button" onclick="removeLogo()" class="px-4 py-2 text-red-600 hover:text-red-700 transition-colors duration-200">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div id="logoPreview" class="mt-2 hidden">
+                                        <img id="logoImage" class="h-16 w-auto rounded-lg border border-gray-200" alt="Company Logo">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Recommended: PNG, JPG up to 2MB. Logo will appear on invoices.</p>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                        <input type="email" id="companyEmail" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="company@example.com" onchange="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                        <input type="tel" id="companyPhone" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="+260 XXX XXX XXX" onchange="updatePreview()">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">TPIN (Tax Registration)</label>
+                                        <input type="text" id="companyTPIN" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1234567890" onchange="updatePreview()">
+                                        <p class="text-xs text-gray-500 mt-1">Leave blank if not tax registered</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Business Registration</label>
+                                        <input type="text" id="companyRegNumber" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="BL/123456" onchange="updatePreview()">
+                                        <p class="text-xs text-gray-500 mt-1">Company registration number</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                                    <textarea id="companyAddress" rows="2" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Company Address, City, Zambia" onchange="updatePreview()"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Details -->
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fa-solid fa-user mr-2 text-green-600"></i>
+                                Client Details
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
+                                    <input type="text" id="clientName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Client/Company Name" onchange="updatePreview()">
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                        <input type="email" id="clientEmail" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="client@example.com" onchange="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                        <input type="tel" id="clientPhone" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="+260 XXX XXX XXX" onchange="updatePreview()">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Client TPIN</label>
+                                        <input type="text" id="clientTPIN" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1234567890" onchange="updatePreview()">
+                                        <p class="text-xs text-gray-500 mt-1">Client's tax registration number</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Client Type</label>
+                                        <select id="clientType" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                            <option value="individual">Individual</option>
+                                            <option value="business">Business/Company</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                                    <textarea id="clientAddress" rows="2" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Client Address, City, Zambia" onchange="updatePreview()"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Details -->
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fa-solid fa-file-text mr-2 text-purple-600"></i>
+                                <span id="documentTypeLabel">Invoice</span> Details
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2"><span id="numberLabel">Invoice</span> Number</label>
+                                    <input type="text" id="documentNumber" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="INV-001" onchange="updatePreview()">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                    <input type="date" id="documentDate" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                </div>
+                                <div id="dueDateField">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+                                    <input type="date" id="dueDate" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                </div>
+                                <div id="validUntilField" class="hidden">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Valid Until</label>
+                                    <input type="date" id="validUntil" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items Section -->
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+                                    <i class="fa-solid fa-list mr-2 text-orange-600"></i>
+                                    Line Items
+                                </h3>
+                                <button onclick="addItem()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Add Item
+                                </button>
+                            </div>
+                            <div id="itemsList" class="space-y-3">
+                                <!-- Items will be added here dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Tax & Totals -->
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fa-solid fa-calculator mr-2 text-red-600"></i>
+                                Tax & Totals
+                            </h3>
+                            <div class="space-y-4">
+                                <!-- Tax Registration Toggle -->
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <label class="font-medium text-gray-900">Tax Registered Business</label>
+                                        <p class="text-sm text-gray-600">Enable if your business is registered for VAT/Tax</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="taxRegistered" class="sr-only peer" onchange="toggleTaxFields()" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div id="taxFields" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
+                                        <input type="number" id="taxRate" value="16" min="0" max="100" step="0.01" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                        <p class="text-xs text-gray-500 mt-1">Standard VAT rate in Zambia is 16%</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tax Type</label>
+                                        <select id="taxType" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                            <option value="VAT">VAT (Value Added Tax)</option>
+                                            <option value="Sales Tax">Sales Tax</option>
+                                            <option value="GST">GST (Goods & Services Tax)</option>
+                                            <option value="Tax">Tax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                                    <select id="currency" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                        <option value="ZMW">ZMW (Zambian Kwacha)</option>
+                                        <option value="USD">USD (US Dollar)</option>
+                                        <option value="EUR">EUR (Euro)</option>
+                                        <option value="GBP">GBP (British Pound)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method & Terms -->
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                                <i class="fa-solid fa-credit-card mr-2 text-green-600"></i>
+                                Payment Method & Terms
+                            </h3>
+                            <div class="space-y-4">
+                                <!-- Payment Method Selection -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+                                    <select id="paymentMethod" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="togglePaymentFields(); updatePreview()">
+                                        <option value="">Select Payment Method</option>
+                                        <option value="bank">Bank Transfer</option>
+                                        <option value="mobile">Mobile Money</option>
+                                        <option value="cash">Cash</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Bank Transfer Fields -->
+                                <div id="bankFields" class="hidden space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Bank Name</label>
+                                            <input type="text" id="bankName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g. Zanaco Bank" onchange="updatePreview()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+                                            <input type="text" id="bankBranch" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g. Lusaka Main Branch" onchange="updatePreview()">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label>
+                                            <input type="text" id="bankAccountName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Account holder name" onchange="updatePreview()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Account No</label>
+                                            <input type="text" id="bankAccountNumber" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Account number" onchange="updatePreview()">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Branch Code</label>
+                                            <input type="text" id="bankBranchCode" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Branch code" onchange="updatePreview()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Sort Code</label>
+                                            <input type="text" id="bankSortCode" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Sort code" onchange="updatePreview()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Swift Code</label>
+                                            <input type="text" id="bankSwiftCode" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Swift code" onchange="updatePreview()">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mobile Money Fields -->
+                                <div id="mobileFields" class="hidden space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Network Provider</label>
+                                            <select id="mobileProvider" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                                                <option value="">Select Provider</option>
+                                                <option value="MTN Mobile Money">MTN Mobile Money</option>
+                                                <option value="Airtel Money">Airtel Money</option>
+                                                <option value="Zamtel Kwacha">Zamtel Kwacha</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                            <input type="tel" id="mobilePhone" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="+260 XXX XXX XXX" onchange="updatePreview()">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label>
+                                        <input type="text" id="mobileAccountName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Account holder name" onchange="updatePreview()">
+                                    </div>
+                                </div>
+                                
+                                <!-- Cash Payment -->
+                                <div id="cashFields" class="hidden">
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                        <div class="flex items-center">
+                                            <i class="fa-solid fa-money-bill text-yellow-600 mr-2"></i>
+                                            <p class="text-yellow-800 font-medium">Payment to be made in cash</p>
+                                        </div>
+                                        <p class="text-yellow-700 text-sm mt-1">Customer will pay the total amount in cash upon delivery/completion.</p>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+                                    <textarea id="paymentTerms" rows="3" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Payment due within 30 days of invoice date..." onchange="updatePreview()"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+                                    <textarea id="notes" rows="2" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Thank you for your business!" onchange="updatePreview()"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="downloadPDF()" class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i>
+                                Download PDF
+                            </button>
+                            <button onclick="clearForm()" class="bg-gray-200 text-gray-700 px-6 py-4 rounded-xl font-semibold hover:bg-gray-300 transition-colors duration-200 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-trash"></i>
+                                Clear Form
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="lg:sticky lg:top-24">
+                        <div class="bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
+                            <div class="flex justify-between items-center p-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Preview</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="updatePreview()" class="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                                        <i class="fa-solid fa-refresh"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="invoicePreview" class="invoice-preview p-8">
+                                <!-- Preview content will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Container - Loaded dynamically -->
+    <div id="footer"></div>
+
+    <script>
+        let currentDocumentType = 'invoice';
+        let itemCounter = 0;
+        let companyLogoDataURL = null;
+
+        // Initialize the form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('documentDate').value = today;
+            
+            // Set default due date to 30 days from today
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            
+            // Add initial item
+            addItem();
+            
+            // Initial preview update
+            updatePreview();
+        });
+
+        function handleLogoUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                // Check file size (2MB limit)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    input.value = '';
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    companyLogoDataURL = e.target.result;
+                    document.getElementById('logoImage').src = companyLogoDataURL;
+                    document.getElementById('logoPreview').classList.remove('hidden');
+                    updatePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeLogo() {
+            companyLogoDataURL = null;
+            document.getElementById('companyLogo').value = '';
+            document.getElementById('logoPreview').classList.add('hidden');
+            updatePreview();
+        }
+
+        function togglePaymentFields() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const bankFields = document.getElementById('bankFields');
+            const mobileFields = document.getElementById('mobileFields');
+            const cashFields = document.getElementById('cashFields');
+            
+            // Hide all fields
+            bankFields.classList.add('hidden');
+            mobileFields.classList.add('hidden');
+            cashFields.classList.add('hidden');
+            
+            // Show relevant fields
+            if (paymentMethod === 'bank') {
+                bankFields.classList.remove('hidden');
+            } else if (paymentMethod === 'mobile') {
+                mobileFields.classList.remove('hidden');
+            } else if (paymentMethod === 'cash') {
+                cashFields.classList.remove('hidden');
+            }
+        }
+
+        function toggleTaxFields() {
+            const taxRegistered = document.getElementById('taxRegistered').checked;
+            const taxFields = document.getElementById('taxFields');
+            
+            if (taxRegistered) {
+                taxFields.style.display = 'grid';
+            } else {
+                taxFields.style.display = 'none';
+                // Reset tax rate to 0 when not tax registered
+                document.getElementById('taxRate').value = '0';
+            }
+            updatePreview();
+        }
+
+        function setDocumentType(type) {
+            currentDocumentType = type;
+            
+            // Update button states
+            const invoiceBtn = document.getElementById('invoiceBtn');
+            const quotationBtn = document.getElementById('quotationBtn');
+            
+            if (type === 'invoice') {
+                invoiceBtn.className = 'px-6 py-3 rounded-lg font-semibold transition-all duration-200 bg-blue-600 text-white';
+                quotationBtn.className = 'px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-600 hover:text-blue-600';
+                
+                // Show due date, hide valid until
+                document.getElementById('dueDateField').classList.remove('hidden');
+                document.getElementById('validUntilField').classList.add('hidden');
+                
+                // Update labels
+                document.getElementById('documentTypeLabel').textContent = 'Invoice';
+                document.getElementById('numberLabel').textContent = 'Invoice';
+                document.getElementById('documentNumber').placeholder = 'INV-001';
+            } else {
+                quotationBtn.className = 'px-6 py-3 rounded-lg font-semibold transition-all duration-200 bg-blue-600 text-white';
+                invoiceBtn.className = 'px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-600 hover:text-blue-600';
+                
+                // Show valid until, hide due date
+                document.getElementById('dueDateField').classList.add('hidden');
+                document.getElementById('validUntilField').classList.remove('hidden');
+                
+                // Update labels
+                document.getElementById('documentTypeLabel').textContent = 'Quotation';
+                document.getElementById('numberLabel').textContent = 'Quote';
+                document.getElementById('documentNumber').placeholder = 'QUO-001';
+            }
+            
+            updatePreview();
+        }
+
+        function addItem() {
+            itemCounter++;
+            const itemsContainer = document.getElementById('itemsList');
+            
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'border border-gray-200 rounded-lg p-4 space-y-3';
+            itemDiv.id = `item-${itemCounter}`;
+            
+            itemDiv.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <h4 class="font-medium text-gray-900">Item ${itemCounter}</h4>
+                    <button onclick="removeItem(${itemCounter})" class="text-red-600 hover:text-red-700 transition-colors duration-200">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                        <input type="text" id="item-desc-${itemCounter}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Item description" onchange="updatePreview()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Quantity</label>
+                        <input type="number" id="item-qty-${itemCounter}" value="1" min="0" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Unit Price</label>
+                        <input type="number" id="item-price-${itemCounter}" value="0" min="0" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="updatePreview()">
+                    </div>
+                </div>
+            `;
+            
+            itemsContainer.appendChild(itemDiv);
+            updatePreview();
+        }
+
+        function removeItem(id) {
+            const itemDiv = document.getElementById(`item-${id}`);
+            if (itemDiv) {
+                itemDiv.remove();
+                updatePreview();
+            }
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('invoicePreview');
+            
+            // Get form data
+            const companyName = document.getElementById('companyName').value || 'Your Company Name';
+            const companyEmail = document.getElementById('companyEmail').value || 'company@example.com';
+            const companyPhone = document.getElementById('companyPhone').value || '+260 XXX XXX XXX';
+            const companyAddress = document.getElementById('companyAddress').value || 'Your Company Address';
+            const companyTPIN = document.getElementById('companyTPIN').value;
+            const companyRegNumber = document.getElementById('companyRegNumber').value;
+            
+            const clientName = document.getElementById('clientName').value || 'Client Name';
+            const clientEmail = document.getElementById('clientEmail').value || 'client@example.com';
+            const clientPhone = document.getElementById('clientPhone').value || '+260 XXX XXX XXX';
+            const clientAddress = document.getElementById('clientAddress').value || 'Client Address';
+            const clientTPIN = document.getElementById('clientTPIN').value;
+            const clientType = document.getElementById('clientType').value;
+            
+            const documentNumber = document.getElementById('documentNumber').value || (currentDocumentType === 'invoice' ? 'INV-001' : 'QUO-001');
+            const documentDate = document.getElementById('documentDate').value || new Date().toISOString().split('T')[0];
+            const dueDate = document.getElementById('dueDate').value;
+            const validUntil = document.getElementById('validUntil').value;
+            
+            const taxRegistered = document.getElementById('taxRegistered').checked;
+            const taxRate = taxRegistered ? (parseFloat(document.getElementById('taxRate').value) || 0) : 0;
+            const taxType = document.getElementById('taxType').value || 'VAT';
+            const currency = document.getElementById('currency').value || 'ZMW';
+            const paymentTerms = document.getElementById('paymentTerms').value || 'Payment due within 30 days';
+            const notes = document.getElementById('notes').value || 'Thank you for your business!';
+            
+            // Calculate totals
+            let subtotal = 0;
+            let itemsHTML = '';
+            
+            const itemElements = document.querySelectorAll('[id^="item-desc-"]');
+            itemElements.forEach((element) => {
+                const id = element.id.split('-')[2];
+                const desc = element.value || 'Item description';
+                const qty = parseFloat(document.getElementById(`item-qty-${id}`).value) || 0;
+                const price = parseFloat(document.getElementById(`item-price-${id}`).value) || 0;
+                const total = qty * price;
+                subtotal += total;
+                
+                itemsHTML += `
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 text-gray-900">${desc}</td>
+                        <td class="py-3 text-center text-gray-600">${qty}</td>
+                        <td class="py-3 text-right text-gray-600">${currency} ${price.toFixed(2)}</td>
+                        <td class="py-3 text-right font-semibold text-gray-900">${currency} ${total.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            const taxAmount = (subtotal * taxRate) / 100;
+            const grandTotal = subtotal + taxAmount;
+            
+            // Format dates
+            const formatDate = (dateString) => {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-GB');
+            };
+            
+            // Generate company info with logo
+            const companyLogoHTML = companyLogoDataURL ? 
+                `<div class="mb-4"><img src="${companyLogoDataURL}" alt="Company Logo" class="h-16 w-auto"></div>` : '';
+            
+            const companyTPINHTML = companyTPIN ? `<p><strong>TPIN:</strong> ${companyTPIN}</p>` : '';
+            const companyRegHTML = companyRegNumber ? `<p><strong>Reg #:</strong> ${companyRegNumber}</p>` : '';
+            const clientTPINHTML = clientTPIN ? `<p><strong>TPIN:</strong> ${clientTPIN}</p>` : '';
+            
+            // Payment method information
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            let paymentMethodHTML = '';
+            
+            if (paymentMethod === 'bank') {
+                const bankName = document.getElementById('bankName').value;
+                const bankBranch = document.getElementById('bankBranch').value;
+                const bankAccountName = document.getElementById('bankAccountName').value;
+                const bankAccountNumber = document.getElementById('bankAccountNumber').value;
+                const bankBranchCode = document.getElementById('bankBranchCode').value;
+                const bankSortCode = document.getElementById('bankSortCode').value;
+                const bankSwiftCode = document.getElementById('bankSwiftCode').value;
+                
+                paymentMethodHTML = `
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Bank Transfer Details:</h4>
+                        <div class="text-gray-600 space-y-1">
+                            ${bankName ? `<p><strong>Bank:</strong> ${bankName}</p>` : ''}
+                            ${bankBranch ? `<p><strong>Branch:</strong> ${bankBranch}</p>` : ''}
+                            ${bankAccountName ? `<p><strong>Account Name:</strong> ${bankAccountName}</p>` : ''}
+                            ${bankAccountNumber ? `<p><strong>Account No:</strong> ${bankAccountNumber}</p>` : ''}
+                            ${bankBranchCode ? `<p><strong>Branch Code:</strong> ${bankBranchCode}</p>` : ''}
+                            ${bankSortCode ? `<p><strong>Sort Code:</strong> ${bankSortCode}</p>` : ''}
+                            ${bankSwiftCode ? `<p><strong>Swift Code:</strong> ${bankSwiftCode}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (paymentMethod === 'mobile') {
+                const mobileProvider = document.getElementById('mobileProvider').value;
+                const mobilePhone = document.getElementById('mobilePhone').value;
+                const mobileAccountName = document.getElementById('mobileAccountName').value;
+                
+                paymentMethodHTML = `
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Mobile Money Details:</h4>
+                        <div class="text-gray-600 space-y-1">
+                            ${mobileProvider ? `<p><strong>Provider:</strong> ${mobileProvider}</p>` : ''}
+                            ${mobilePhone ? `<p><strong>Phone Number:</strong> ${mobilePhone}</p>` : ''}
+                            ${mobileAccountName ? `<p><strong>Account Name:</strong> ${mobileAccountName}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (paymentMethod === 'cash') {
+                paymentMethodHTML = `
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Payment Method:</h4>
+                        <p class="text-gray-600">Pay in cash</p>
+                    </div>
+                `;
+            }
+            
+            // Generate preview HTML
+            preview.innerHTML = `
+                <div class="space-y-8">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start">
+                        <div>
+                            ${companyLogoHTML}
+                            <h1 class="text-3xl font-bold text-gray-900 mb-2">${companyName}</h1>
+                            <div class="text-gray-600 space-y-1">
+                                <p>${companyEmail}</p>
+                                <p>${companyPhone}</p>
+                                <p class="whitespace-pre-line">${companyAddress}</p>
+                                ${companyTPINHTML}
+                                ${companyRegHTML}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <h2 class="text-2xl font-bold text-blue-600 mb-2">${currentDocumentType.toUpperCase()}</h2>
+                            <div class="text-gray-600 space-y-1">
+                                <p><strong>${currentDocumentType === 'invoice' ? 'Invoice' : 'Quote'} #:</strong> ${documentNumber}</p>
+                                <p><strong>Date:</strong> ${formatDate(documentDate)}</p>
+                                ${currentDocumentType === 'invoice' && dueDate ? `<p><strong>Due Date:</strong> ${formatDate(dueDate)}</p>` : ''}
+                                ${currentDocumentType === 'quotation' && validUntil ? `<p><strong>Valid Until:</strong> ${formatDate(validUntil)}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bill To -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">${currentDocumentType === 'invoice' ? 'Bill To:' : 'Quote For:'}</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-900">${clientName}</p>
+                            <p class="text-sm text-gray-500 capitalize">${clientType}</p>
+                            <div class="text-gray-600 space-y-1 mt-2">
+                                <p>${clientEmail}</p>
+                                <p>${clientPhone}</p>
+                                <p class="whitespace-pre-line">${clientAddress}</p>
+                                ${clientTPINHTML}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Items Table -->
+                    <div>
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-100 border-b-2 border-gray-300">
+                                    <th class="py-3 px-4 text-left font-semibold text-gray-900">Description</th>
+                                    <th class="py-3 px-4 text-center font-semibold text-gray-900">Qty</th>
+                                    <th class="py-3 px-4 text-right font-semibold text-gray-900">Unit Price</th>
+                                    <th class="py-3 px-4 text-right font-semibold text-gray-900">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Totals -->
+                    <div class="flex justify-end">
+                        <div class="w-80">
+                            <div class="space-y-2">
+                                <div class="flex justify-between py-2">
+                                    <span class="text-gray-600">Subtotal:</span>
+                                    <span class="font-semibold">${currency} ${subtotal.toFixed(2)}</span>
+                                </div>
+                                ${taxRegistered ? `
+                                <div class="flex justify-between py-2">
+                                    <span class="text-gray-600">${taxType} (${taxRate}%):</span>
+                                    <span class="font-semibold">${currency} ${taxAmount.toFixed(2)}</span>
+                                </div>
+                                ` : ''}
+                                <div class="flex justify-between py-3 border-t-2 border-gray-300">
+                                    <span class="text-lg font-bold text-gray-900">Total:</span>
+                                    <span class="text-lg font-bold text-blue-600">${currency} ${grandTotal.toFixed(2)}</span>
+                                </div>
+                                ${!taxRegistered ? `
+                                <div class="text-xs text-gray-500 text-right mt-2">
+                                    <p>*No tax applied - Business not tax registered</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Terms & Notes -->
+                    <div class="space-y-4">
+                        ${paymentMethodHTML}
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Payment Terms:</h4>
+                            <p class="text-gray-600 whitespace-pre-line">${paymentTerms}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Notes:</h4>
+                            <p class="text-gray-600 whitespace-pre-line">${notes}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            
+            // Get form data
+            const companyName = document.getElementById('companyName').value || 'Your Company Name';
+            const companyEmail = document.getElementById('companyEmail').value || 'company@example.com';
+            const companyPhone = document.getElementById('companyPhone').value || '+260 XXX XXX XXX';
+            const companyAddress = document.getElementById('companyAddress').value || 'Your Company Address';
+            const companyTPIN = document.getElementById('companyTPIN').value;
+            const companyRegNumber = document.getElementById('companyRegNumber').value;
+            
+            const clientName = document.getElementById('clientName').value || 'Client Name';
+            const clientEmail = document.getElementById('clientEmail').value || 'client@example.com';
+            const clientPhone = document.getElementById('clientPhone').value || '+260 XXX XXX XXX';
+            const clientAddress = document.getElementById('clientAddress').value || 'Client Address';
+            const clientTPIN = document.getElementById('clientTPIN').value;
+            const clientType = document.getElementById('clientType').value;
+            
+            const documentNumber = document.getElementById('documentNumber').value || (currentDocumentType === 'invoice' ? 'INV-001' : 'QUO-001');
+            const documentDate = document.getElementById('documentDate').value || new Date().toISOString().split('T')[0];
+            const dueDate = document.getElementById('dueDate').value;
+            const validUntil = document.getElementById('validUntil').value;
+            
+            const taxRegistered = document.getElementById('taxRegistered').checked;
+            const taxRate = taxRegistered ? (parseFloat(document.getElementById('taxRate').value) || 0) : 0;
+            const taxType = document.getElementById('taxType').value || 'VAT';
+            const currency = document.getElementById('currency').value || 'ZMW';
+            const paymentTerms = document.getElementById('paymentTerms').value || 'Payment due within 30 days';
+            const notes = document.getElementById('notes').value || 'Thank you for your business!';
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            // Calculate totals
+            let subtotal = 0;
+            const items = [];
+            
+            const itemElements = document.querySelectorAll('[id^="item-desc-"]');
+            itemElements.forEach((element) => {
+                const id = element.id.split('-')[2];
+                const desc = element.value || 'Item description';
+                const qty = parseFloat(document.getElementById(`item-qty-${id}`).value) || 0;
+                const price = parseFloat(document.getElementById(`item-price-${id}`).value) || 0;
+                const total = qty * price;
+                subtotal += total;
+                
+                items.push({
+                    description: desc,
+                    quantity: qty,
+                    price: price,
+                    total: total
+                });
+            });
+            
+            const taxAmount = (subtotal * taxRate) / 100;
+            const grandTotal = subtotal + taxAmount;
+            
+            // Format dates
+            const formatDate = (dateString) => {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-GB');
+            };
+            
+            // Page setup
+            const pageWidth = pdf.internal.pageSize.width;
+            const pageHeight = pdf.internal.pageSize.height;
+            const margin = 20;
+            
+            let yPos = 25;
+            
+            // Header Section with Logo and Company Info
+            if (companyLogoDataURL) {
+                try {
+                    pdf.addImage(companyLogoDataURL, 'JPEG', margin, yPos, 30, 25);
+                } catch (error) {
+                    console.warn('Logo could not be added to PDF:', error);
+                }
+            }
+            
+            // Company Name and Info
+            const logoOffset = companyLogoDataURL ? 35 : 0;
+            pdf.setFontSize(16);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(59, 130, 246);
+            pdf.text(companyName, margin + logoOffset, yPos + 8);
+            
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(100, 100, 100);
+            pdf.text('CREATIVE AGENCY', margin + logoOffset, yPos + 14);
+            
+            // Document Type (INVOICE) - Top Right
+            pdf.setFontSize(24);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(59, 130, 246);
+            const docTypeText = currentDocumentType.toUpperCase();
+            const docTypeWidth = pdf.getTextWidth(docTypeText);
+            pdf.text(docTypeText, pageWidth - margin - docTypeWidth, yPos + 15);
+            
+            // Website/Contact line
+            pdf.setFontSize(8);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(companyEmail, pageWidth - margin - pdf.getTextWidth(companyEmail), yPos + 25);
+            
+            yPos += 40;
+            
+            // Horizontal divider line
+            pdf.setDrawColor(59, 130, 246);
+            pdf.setLineWidth(2);
+            pdf.line(margin, yPos, pageWidth - margin, yPos);
+            
+            yPos += 15;
+            
+            // Company Details and Document Info Section
+            // Left Column - Company Details
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(75, 85, 99);
+            
+            let leftYPos = yPos;
+            const companyDetails = [
+                companyPhone,
+                ...companyAddress.split('\n').filter(line => line.trim())
+            ];
+            
+            if (companyTPIN) companyDetails.push(`TPIN: ${companyTPIN}`);
+            if (companyRegNumber) companyDetails.push(`Reg #: ${companyRegNumber}`);
+            
+            companyDetails.forEach(detail => {
+                pdf.text(detail, margin, leftYPos);
+                leftYPos += 5;
+            });
+            
+            // Right Column - Document Details
+            const rightColumnX = pageWidth - 80;
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(75, 85, 99);
+            
+            const docLabel = currentDocumentType === 'invoice' ? 'Invoice no' : 'Quote no';
+            pdf.text(`${docLabel} :`, rightColumnX, yPos);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(documentNumber, rightColumnX + 25, yPos);
+            
+            yPos += 7;
+            pdf.setFont('helvetica', 'normal');
+            pdf.text('Date :', rightColumnX, yPos);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(formatDate(documentDate), rightColumnX + 25, yPos);
+            
+            if (currentDocumentType === 'invoice' && dueDate) {
+                yPos += 7;
+                pdf.setFont('helvetica', 'normal');
+                pdf.text('Due Date :', rightColumnX, yPos);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text(formatDate(dueDate), rightColumnX + 25, yPos);
+            } else if (currentDocumentType === 'quotation' && validUntil) {
+                yPos += 7;
+                pdf.setFont('helvetica', 'normal');
+                pdf.text('Valid Until :', rightColumnX, yPos);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text(formatDate(validUntil), rightColumnX + 25, yPos);
+            }
+            
+            yPos = Math.max(leftYPos, yPos) + 20;
+            
+            // Invoice To / Quote For Section
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(75, 85, 99);
+            pdf.text(currentDocumentType === 'invoice' ? 'Invoice to :' : 'Quote for :', margin, yPos);
+            
+            yPos += 10;
+            
+            // Client Details
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(17, 24, 39);
+            pdf.text(clientName, margin, yPos);
+            
+            yPos += 6;
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'italic');
+            pdf.setTextColor(107, 114, 128);
+            pdf.text(`(${clientType.charAt(0).toUpperCase() + clientType.slice(1)})`, margin, yPos);
+            
+            yPos += 6;
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(75, 85, 99);
+            
+            const clientDetails = [
+                clientPhone,
+                clientEmail,
+                ...clientAddress.split('\n').filter(line => line.trim())
+            ];
+            
+            if (clientTPIN) clientDetails.push(`TPIN: ${clientTPIN}`);
+            
+            clientDetails.forEach(detail => {
+                pdf.text(detail, margin, yPos);
+                yPos += 5;
+            });
+            
+            yPos += 15;
+            
+            // Items Table
+            const tableStartY = yPos;
+            const tableWidth = pageWidth - (2 * margin);
+            
+            // Table Header
+            const headerHeight = 12;
+            pdf.setFillColor(59, 130, 246);
+            pdf.rect(margin, yPos, tableWidth, headerHeight, 'F');
+            
+            // Header Text
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(255, 255, 255);
+            
+            const colPositions = {
+                no: margin + 5,
+                description: margin + 20,
+                qty: margin + 110,
+                price: margin + 135,
+                total: margin + 160
+            };
+            
+            pdf.text('NO', colPositions.no, yPos + 8);
+            pdf.text('DESCRIPTION', colPositions.description, yPos + 8);
+            pdf.text('QTY', colPositions.qty, yPos + 8);
+            pdf.text('PRICE', colPositions.price, yPos + 8);
+            pdf.text('TOTAL', colPositions.total, yPos + 8);
+            
+            yPos += headerHeight;
+            
+            // Table Rows
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(75, 85, 99);
+            
+            items.forEach((item, index) => {
+                const rowHeight = 10;
+                
+                // Alternating row background
+                if (index % 2 === 1) {
+                    pdf.setFillColor(249, 250, 251);
+                    pdf.rect(margin, yPos, tableWidth, rowHeight, 'F');
+                }
+                
+                // Row content
+                pdf.text((index + 1).toString(), colPositions.no, yPos + 7);
+                
+                // Wrap description if too long
+                const maxDescWidth = 85;
+                const wrappedDesc = pdf.splitTextToSize(item.description, maxDescWidth);
+                pdf.text(wrappedDesc[0] || item.description, colPositions.description, yPos + 7);
+                
+                pdf.text(item.quantity.toString(), colPositions.qty, yPos + 7);
+                pdf.text(`${currency} ${item.price.toFixed(2)}`, colPositions.price, yPos + 7);
+                
+                // Total in bold
+                pdf.setFont('helvetica', 'bold');
+                pdf.text(`${currency} ${item.total.toFixed(2)}`, colPositions.total, yPos + 7);
+                pdf.setFont('helvetica', 'normal');
+                
+                // Row border
+                pdf.setDrawColor(229, 231, 235);
+                pdf.setLineWidth(0.5);
+                pdf.line(margin, yPos + rowHeight, pageWidth - margin, yPos + rowHeight);
+                
+                yPos += rowHeight;
+            });
+            
+            yPos += 15;
+            
+            // Totals Section
+            const totalsX = pageWidth - 100;
+            
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(75, 85, 99);
+            
+            // Sub Total
+            pdf.text('Sub Total :', totalsX, yPos);
+            pdf.text(`${currency} ${subtotal.toFixed(2)}`, totalsX + 50, yPos);
+            
+            if (taxRegistered) {
+                yPos += 8;
+                pdf.text(`${taxType} ${taxRate}% :`, totalsX, yPos);
+                pdf.text(`${currency} ${taxAmount.toFixed(2)}`, totalsX + 50, yPos);
+            }
+            
+            yPos += 12;
+            
+            // Grand Total - Highlighted
+            pdf.setFillColor(59, 130, 246);
+            pdf.rect(totalsX - 5, yPos - 5, 95, 12, 'F');
+            
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(255, 255, 255);
+            pdf.text('GRAND TOTAL :', totalsX, yPos + 3);
+            pdf.text(`${currency} ${grandTotal.toFixed(2)}`, totalsX + 50, yPos + 3);
+            
+            yPos += 25;
+            
+            // Tax note for non-registered businesses
+            if (!taxRegistered) {
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'italic');
+                pdf.setTextColor(107, 114, 128);
+                pdf.text('*No tax applied - Business not tax registered', margin, yPos);
+                yPos += 10;
+            }
+            
+            // Payment Method Section
+            if (paymentMethod) {
+                pdf.setFillColor(59, 130, 246);
+                pdf.rect(margin, yPos, 80, 8, 'F');
+                
+                pdf.setFontSize(9);
+                pdf.setFont('helvetica', 'bold');
+                pdf.setTextColor(255, 255, 255);
+                pdf.text('PAYMENT METHOD :', margin + 3, yPos + 6);
+                
+                yPos += 12;
+                
+                pdf.setFontSize(9);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setTextColor(75, 85, 99);
+                
+                if (paymentMethod === 'bank') {
+                    pdf.text('Bank Transfer Details', margin, yPos);
+                    yPos += 6;
+                    
+                    const bankDetails = [
+                        document.getElementById('bankName').value && `Bank Name : ${document.getElementById('bankName').value}`,
+                        document.getElementById('bankBranch').value && `Branch : ${document.getElementById('bankBranch').value}`,
+                        document.getElementById('bankAccountName').value && `Account Name : ${document.getElementById('bankAccountName').value}`,
+                        document.getElementById('bankAccountNumber').value && `Account Number : ${document.getElementById('bankAccountNumber').value}`,
+                        document.getElementById('bankBranchCode').value && `Branch Code : ${document.getElementById('bankBranchCode').value}`,
+                        document.getElementById('bankSortCode').value && `Sort Code : ${document.getElementById('bankSortCode').value}`,
+                        document.getElementById('bankSwiftCode').value && `Swift Code : ${document.getElementById('bankSwiftCode').value}`
+                    ].filter(Boolean);
+                    
+                    bankDetails.forEach(detail => {
+                        pdf.text(detail, margin, yPos);
+                        yPos += 4;
+                    });
+                    
+                } else if (paymentMethod === 'mobile') {
+                    pdf.text('Mobile Money Details', margin, yPos);
+                    yPos += 6;
+                    
+                    const mobileDetails = [
+                        document.getElementById('mobileProvider').value && `Network Provider : ${document.getElementById('mobileProvider').value}`,
+                        document.getElementById('mobilePhone').value && `Phone Number : ${document.getElementById('mobilePhone').value}`,
+                        document.getElementById('mobileAccountName').value && `Account Name : ${document.getElementById('mobileAccountName').value}`
+                    ].filter(Boolean);
+                    
+                    mobileDetails.forEach(detail => {
+                        pdf.text(detail, margin, yPos);
+                        yPos += 4;
+                    });
+                    
+                } else if (paymentMethod === 'cash') {
+                    pdf.text('Cash Payment - Pay upon delivery/completion', margin, yPos);
+                    yPos += 6;
+                }
+                
+                yPos += 10;
+            }
+            
+            // Thank you message
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(75, 85, 99);
+            pdf.text('Thank you for business with us!', margin, yPos);
+            
+            yPos += 15;
+            
+            // Terms and Conditions Section
+            if (paymentTerms.trim()) {
+                pdf.setFontSize(10);
+                pdf.setFont('helvetica', 'bold');
+                pdf.setTextColor(75, 85, 99);
+                pdf.text('Term and Conditions :', margin, yPos);
+                
+                yPos += 8;
+                
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setTextColor(75, 85, 99);
+                
+                const termsLines = pdf.splitTextToSize(paymentTerms, pageWidth - 2 * margin);
+                termsLines.forEach(line => {
+                    pdf.text(line, margin, yPos);
+                    yPos += 4;
+                });
+                
+                yPos += 10;
+            }
+            
+            // Notes Section
+            if (notes.trim() && notes !== 'Thank you for your business!') {
+                pdf.setFontSize(10);
+                pdf.setFont('helvetica', 'bold');
+                pdf.setTextColor(75, 85, 99);
+                pdf.text('Additional Notes :', margin, yPos);
+                
+                yPos += 8;
+                
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'normal');
+                const notesLines = pdf.splitTextToSize(notes, pageWidth - 2 * margin);
+                notesLines.forEach(line => {
+                    pdf.text(line, margin, yPos);
+                    yPos += 4;
+                });
+                
+                yPos += 10;
+            }
+            
+            // Signature Section (if space allows)
+            if (yPos < pageHeight - 40) {
+                const signatureX = pageWidth - 120;
+                
+                pdf.setFontSize(9);
+                pdf.setFont('helvetica', 'italic');
+                pdf.setTextColor(107, 114, 128);
+                pdf.text('Henrietta Mitchell', signatureX, yPos);
+                
+                yPos += 5;
+                pdf.setFont('helvetica', 'normal');
+                pdf.text('Administrator', signatureX, yPos);
+            }
+            
+            // Footer with horizontal line
+            const footerY = pageHeight - 25;
+            pdf.setDrawColor(59, 130, 246);
+            pdf.setLineWidth(2);
+            pdf.line(margin, footerY, pageWidth - margin, footerY);
+            
+            // Footer contact info
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(75, 85, 99);
+            
+            // Contact icons and info
+            const iconY = footerY + 8;
+            pdf.text('📞', margin, iconY);
+            pdf.text(companyPhone, margin + 8, iconY);
+            
+            pdf.text('✉', margin + 60, iconY);
+            pdf.text(companyEmail, margin + 68, iconY);
+            
+            pdf.text('📍', margin + 130, iconY);
+            const addressLine = companyAddress.split('\n')[0] || 'Your Business Address';
+            pdf.text(addressLine, margin + 138, iconY);
+            
+            // Save PDF
+            const filename = `${currentDocumentType}-${documentNumber}.pdf`;
+            pdf.save(filename);
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all form data?')) {
+                // Reset all form fields
+                document.querySelectorAll('input, textarea, select').forEach(field => {
+                    if (field.type === 'date') {
+                        if (field.id === 'documentDate') {
+                            field.value = new Date().toISOString().split('T')[0];
+                        } else if (field.id === 'dueDate') {
+                            const dueDate = new Date();
+                            dueDate.setDate(dueDate.getDate() + 30);
+                            field.value = dueDate.toISOString().split('T')[0];
+                        } else {
+                            field.value = '';
+                        }
+                    } else if (field.id === 'taxRate') {
+                        field.value = '16';
+                    } else if (field.id === 'currency') {
+                        field.value = 'ZMW';
+                    } else if (field.id === 'taxType') {
+                        field.value = 'VAT';
+                    } else if (field.id === 'clientType') {
+                        field.value = 'individual';
+                    } else if (field.id === 'paymentMethod') {
+                        field.value = '';
+                    } else if (field.id === 'mobileProvider') {
+                        field.value = '';
+                    } else if (field.id === 'taxRegistered') {
+                        field.checked = true;
+                    } else if (field.type !== 'file') {
+                        field.value = '';
+                    }
+                });
+                
+                // Clear logo
+                removeLogo();
+                
+                // Clear items
+                document.getElementById('itemsList').innerHTML = '';
+                itemCounter = 0;
+                
+                // Reset tax fields visibility
+                toggleTaxFields();
+                
+                // Reset payment fields visibility
+                togglePaymentFields();
+                
+                // Add one default item
+                addItem();
+                
+                // Update preview
+                updatePreview();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+    </script>
+    <script src="../assets/js/layout.js"></script>
+</body>
+</html>

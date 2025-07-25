@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Dash - Smart Tools for Everyday Tasks</title>
+  <meta name="description" content="Digital Dash offers simple digital tools for Zambian users to handle compliance, business, and personal tasks without complex software.">
+  <meta name="keywords" content="Zambia, Digital Tools, NHIMA, NAPSA, Returns, Compliance, Business Tools">
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:title" content="Digital Dash - Smart Tools for Everyday Tasks">
+  <meta property="og:description" content="Simple digital tools for Zambian users to handle compliance, business, and personal tasks.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://digital-dash.vercel.app">
+  <meta property="og:image" content="https://digital-dash.vercel.app/assets/images/og-image.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #e6f4ea 0%, #fffbe6 100%);
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+    }
+    .loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo {
+      width: 84px;
+      height: 84px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2ecc40 60%, #ffb400 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(46,204,64,0.08);
+      margin-bottom: 24px;
+    }
+    .logo-inner {
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+    .message {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 24px;
+    }
+  </style>
+  
+  <!-- Redirect to home.html after a brief loading screen -->
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.location.href = 'home.html';
+      }, 1500); // 1.5 second delay
+    }
+  </script>
+</head>
+<body>
+  <div class="loader">
+    <div class="logo">
+      <div class="logo-inner">DD</div>
+    </div>
+    <div class="message">Loading Digital Dash...</div>
+  </div>
+</body>
+</html>

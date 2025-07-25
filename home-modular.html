@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Dash – Modern Tools for Digital Life</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Poppins', sans-serif;
+        }
+        .glassmorphism {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Stats counter animation */
+        .stat-counter {
+            display: inline-block;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        /* Tool card hover effects */
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Container - Loaded dynamically -->
+    <div id="navbar"></div>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20 lg:py-32 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-10 left-10 w-20 h-20 bg-white rounded-full"></div>
+                <div class="absolute top-32 right-20 w-16 h-16 bg-white rounded-full"></div>
+                <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full"></div>
+                <div class="absolute bottom-32 right-1/3 w-8 h-8 bg-white rounded-full"></div>
+            </div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="text-center">
+                    <div class="float-animation flex justify-center mb-8">
+                        <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center glassmorphism">
+                            <i class="fa-solid fa-rocket text-4xl"></i>
+                        </div>
+                    </div>
+                    <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                        Digital <span class="text-yellow-300">Dash</span>
+                    </h1>
+                    <p class="text-xl sm:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                        Modern tools for digital life. Streamline your workflow with powerful, intuitive applications designed for today's challenges.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="dash.html" class="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-play"></i>
+                            Get Started
+                        </a>
+                        <a href="returns.html" class="bg-blue-700/50 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700/70 transition-all duration-200 inline-flex items-center gap-2 glassmorphism">
+                            <i class="fa-solid fa-file-lines"></i>
+                            Compliance Tools
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-6">
+                        <div class="text-4xl font-bold text-blue-600 mb-2">
+                            <span class="stat-counter" data-target="10">0</span>+
+                        </div>
+                        <p class="text-gray-600 font-medium">Digital Tools</p>
+                        <p class="text-sm text-gray-500 mt-2">Powerful applications for every need</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl font-bold text-purple-600 mb-2">
+                            <span class="stat-counter" data-target="99">0</span>%
+                        </div>
+                        <p class="text-gray-600 font-medium">User Satisfaction</p>
+                        <p class="text-sm text-gray-500 mt-2">Built with user experience in mind</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl font-bold text-green-600 mb-2">
+                            <span class="stat-counter" data-target="24">0</span>/7
+                        </div>
+                        <p class="text-gray-600 font-medium">Available</p>
+                        <p class="text-sm text-gray-500 mt-2">Access your tools anytime, anywhere</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Tools Section -->
+        <section class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="font-display text-4xl font-bold text-gray-900 mb-4">
+                        Featured Tools
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Discover our most popular tools designed to boost your productivity and simplify complex tasks.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- NAPSA Tool -->
+                    <div class="tool-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-invoice-dollar text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">NAPSA Generator</h3>
+                        <p class="text-gray-600 text-sm mb-4">Generate NAPSA employee contribution files with ease.</p>
+                        <a href="tools/napsa.html" class="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200 inline-flex items-center gap-1">
+                            Try it now <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- NHIMA Tool -->
+                    <div class="tool-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-medical text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">NHIMA Generator</h3>
+                        <p class="text-gray-600 text-sm mb-4">Create NHIMA employee data files quickly and accurately.</p>
+                        <a href="tools/nhima.html" class="text-green-600 font-medium hover:text-green-700 transition-colors duration-200 inline-flex items-center gap-1">
+                            Try it now <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Dashboard Tool -->
+                    <div class="tool-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-chart-line text-purple-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">Dashboard</h3>
+                        <p class="text-gray-600 text-sm mb-4">Access all your tools from one central location.</p>
+                        <a href="dash.html" class="text-purple-600 font-medium hover:text-purple-700 transition-colors duration-200 inline-flex items-center gap-1">
+                            View all <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- More Tools -->
+                    <div class="tool-card bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-gray-300 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-plus text-gray-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">More Coming Soon</h3>
+                        <p class="text-gray-600 text-sm mb-4">We're constantly adding new tools to help you work smarter.</p>
+                        <span class="text-gray-500 font-medium">Stay tuned</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="font-display text-4xl font-bold text-gray-900 mb-6">
+                            Why Choose Digital Dash?
+                        </h2>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mt-1">
+                                    <i class="fa-solid fa-bolt text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2">Lightning Fast</h3>
+                                    <p class="text-gray-600">Built with modern web technologies for instant responsiveness and smooth user experience.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mt-1">
+                                    <i class="fa-solid fa-shield-halved text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2">Secure & Private</h3>
+                                    <p class="text-gray-600">Your data stays on your device. We don't store or track your personal information.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mt-1">
+                                    <i class="fa-solid fa-mobile-screen text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2">Mobile Friendly</h3>
+                                    <p class="text-gray-600">Works perfectly on all devices - desktop, tablet, or mobile phone.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="bg-gradient-to-br from-blue-400 to-purple-600 rounded-2xl p-8 text-white text-center">
+                            <i class="fa-solid fa-laptop-code text-6xl mb-6 opacity-90"></i>
+                            <h3 class="font-display text-2xl font-bold mb-4">Ready to Get Started?</h3>
+                            <p class="text-blue-100 mb-6">Join thousands of users who trust Digital Dash for their daily workflows.</p>
+                            <a href="dash.html" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors duration-200 inline-flex items-center gap-2">
+                                <i class="fa-solid fa-rocket"></i>
+                                Launch Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Container - Loaded dynamically -->
+    <div id="footer"></div>
+
+    <!-- Scripts -->
+    <script>
+        // Stats counter animation
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start);
+                }
+            }, 16);
+        }
+
+        // Initialize counters when they come into view
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    animateCounter(counter, target);
+                    observer.unobserve(counter);
+                }
+            });
+        }, observerOptions);
+
+        // Start observing when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.stat-counter').forEach(counter => {
+                observer.observe(counter);
+            });
+        });
+    </script>
+    
+    <!-- Load the modular layout system -->
+    <script src="assets/js/layout.js"></script>
+</body>
+</html>

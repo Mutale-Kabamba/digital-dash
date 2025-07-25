@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Dashboard – Digital Dash</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Poppins', sans-serif;
+        }
+        .glassmorphism {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Tool card hover effects */
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        /* Category card hover effects */
+        .category-card {
+            transition: all 0.3s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Container - Loaded dynamically -->
+    <div id="navbar"></div>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-16 lg:py-24 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-10 left-10 w-16 h-16 bg-white rounded-full"></div>
+                <div class="absolute top-24 right-20 w-12 h-12 bg-white rounded-full"></div>
+                <div class="absolute bottom-16 left-1/4 w-8 h-8 bg-white rounded-full"></div>
+                <div class="absolute bottom-24 right-1/3 w-6 h-6 bg-white rounded-full"></div>
+            </div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="text-center">
+                    <div class="flex justify-center mb-6">
+                        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center glassmorphism">
+                            <i class="fa-solid fa-chart-line text-2xl"></i>
+                        </div>
+                    </div>
+                    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                        Tools <span class="text-yellow-300">Dashboard</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                        Access all your digital tools in one organized dashboard. From compliance to productivity tools.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tool Categories -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                        Tool Categories
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Choose from our organized categories to find the perfect tool for your needs.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Zambian Compliance Tools -->
+                    <div class="category-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer" onclick="showCategoryModal('compliance')">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-shield text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">Zambian Compliance Tools</h3>
+                        <p class="text-gray-600 text-sm mb-4">NHIMA, NAPSA, PAYE, VAT, and more for compliance made easy.</p>
+                        <button class="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200">
+                            View Tools
+                        </button>
+                    </div>
+                    
+                    <!-- Personal & Career Tools -->
+                    <div class="category-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer" onclick="showCategoryModal('personal')">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-user-graduate text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">Personal & Career Tools</h3>
+                        <p class="text-gray-600 text-sm mb-4">CVs, cover letters, job tracking, and skills for your next step.</p>
+                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200">
+                            View Tools
+                        </button>
+                    </div>
+                    
+                    <!-- SME Business Tools -->
+                    <div class="category-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer" onclick="showCategoryModal('sme')">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-briefcase text-yellow-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">SME Business Tools</h3>
+                        <p class="text-gray-600 text-sm mb-4">Quotations, receipts, inventory, and more for small businesses.</p>
+                        <button class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-yellow-700 transition-colors duration-200">
+                            View Tools
+                        </button>
+                    </div>
+                    
+                    <!-- Utility Tools -->
+                    <div class="category-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer" onclick="showCategoryModal('utility')">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-screwdriver-wrench text-purple-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">Utility Tools</h3>
+                        <p class="text-gray-600 text-sm mb-4">Converters, compressors, and helpers for everyday digital tasks.</p>
+                        <button class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors duration-200">
+                            View Tools
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Tools Section -->
+        <section class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                        Available Tools
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Quick access to our most popular and frequently used tools.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- NAPSA Tool -->
+                    <div class="tool-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-invoice-dollar text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">NAPSA Generator</h3>
+                        <p class="text-gray-600 text-sm mb-4">Generate NAPSA employee contribution files with ease and accuracy.</p>
+                        <a href="tools/napsa.html" class="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200">
+                            Launch Tool
+                        </a>
+                    </div>
+                    
+                    <!-- NHIMA Tool -->
+                    <div class="tool-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-medical text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">NHIMA Generator</h3>
+                        <p class="text-gray-600 text-sm mb-4">Create NHIMA employee data files quickly and accurately.</p>
+                        <a href="tools/nhima.html" class="block w-full bg-green-600 text-white text-center py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200">
+                            Launch Tool
+                        </a>
+                    </div>
+                    
+                    <!-- Invoice Generator Tool -->
+                    <div class="tool-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-invoice text-yellow-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">Invoice Generator</h3>
+                        <p class="text-gray-600 text-sm mb-4">Create professional invoices and quotations for your business.</p>
+                        <a href="tools/invoice.html" class="block w-full bg-yellow-600 text-white text-center py-2 px-4 rounded-lg font-medium hover:bg-yellow-700 transition-colors duration-200">
+                            Launch Tool
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Suggest Tool Section -->
+        <section class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white text-center">
+                    <h2 class="font-display text-2xl sm:text-3xl font-bold mb-4">
+                        Have a Tool Suggestion?
+                    </h2>
+                    <p class="text-blue-100 mb-6 max-w-2xl mx-auto">
+                        We're always looking to add tools that make your work easier. Let us know what you need!
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input type="text" id="suggest-tool" placeholder="e.g. Payroll Calculator" 
+                               class="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        <button onclick="suggestTool()" 
+                                class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200">
+                            Suggest Tool
+                        </button>
+                    </div>
+                    <div id="suggest-msg" class="mt-4 text-sm text-blue-100"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for category tools -->
+    <div id="category-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Category Tools</h3>
+                    <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="modal-body" class="mb-6"></div>
+                <button id="goto-category-btn" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
+                    Go to Category Page
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Container - Loaded dynamically -->
+    <div id="footer"></div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Category modal functions
+        function showCategoryModal(category) {
+            const modal = document.getElementById('category-modal');
+            const modalBody = document.getElementById('modal-body');
+            const gotoBtn = document.getElementById('goto-category-btn');
+            
+            let content = '';
+            let categoryUrl = '#';
+            
+            switch(category) {
+                case 'compliance':
+                    content = `
+                        <h4 class="text-lg font-semibold mb-4 text-gray-900">Zambian Compliance Tools</h4>
+                        <div class="space-y-3">
+                            <div class="p-3 border border-gray-200 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-file-invoice-dollar text-blue-600"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">NAPSA Generator</h5>
+                                        <p class="text-sm text-gray-600">Generate NAPSA employee contribution files</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border border-gray-200 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-file-medical text-green-600"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">NHIMA Generator</h5>
+                                        <p class="text-sm text-gray-600">Create NHIMA employee data files</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border border-gray-200 rounded-lg opacity-50">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-calculator text-gray-400"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-400">PAYE Calculator</h5>
+                                        <p class="text-sm text-gray-400">Coming soon...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    categoryUrl = 'returns.html';
+                    break;
+                case 'personal':
+                    content = `
+                        <h4 class="text-lg font-semibold mb-4 text-gray-900">Personal & Career Tools</h4>
+                        <div class="space-y-3">
+                            <div class="p-3 border border-gray-200 rounded-lg opacity-50">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-file-user text-gray-400"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-400">CV Builder</h5>
+                                        <p class="text-sm text-gray-400">Coming soon...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border border-gray-200 rounded-lg opacity-50">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-envelope text-gray-400"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-400">Cover Letter Generator</h5>
+                                        <p class="text-sm text-gray-400">Coming soon...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'sme':
+                    content = `
+                        <h4 class="text-lg font-semibold mb-4 text-gray-900">SME Business Tools</h4>
+                        <div class="space-y-3">
+                            <div class="p-3 border border-blue-200 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-file-invoice text-blue-600"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900">Invoice Generator</h5>
+                                        <p class="text-sm text-gray-600">Create professional invoices and quotations</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border border-gray-200 rounded-lg opacity-50">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-receipt text-gray-400"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-400">Receipt Maker</h5>
+                                        <p class="text-sm text-gray-400">Coming soon...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    categoryUrl = 'sme.html';
+                    break;
+                case 'utility':
+                    content = `
+                        <h4 class="text-lg font-semibold mb-4 text-gray-900">Utility Tools</h4>
+                        <div class="space-y-3">
+                            <div class="p-3 border border-gray-200 rounded-lg opacity-50">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-file-zipper text-gray-400"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-400">File Compressor</h5>
+                                        <p class="text-sm text-gray-400">Coming soon...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border border-gray-200 rounded-lg opacity-50">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-arrows-rotate text-gray-400"></i>
+                                    <div>
+                                        <h5 class="font-medium text-gray-400">File Converter</h5>
+                                        <p class="text-sm text-gray-400">Coming soon...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            modalBody.innerHTML = content;
+            gotoBtn.onclick = () => window.location.href = categoryUrl;
+            modal.classList.remove('hidden');
+        }
+
+        function closeCategoryModal() {
+            const modal = document.getElementById('category-modal');
+            modal.classList.add('hidden');
+        }
+
+        // Suggest tool function
+        function suggestTool() {
+            const input = document.getElementById('suggest-tool');
+            const msg = document.getElementById('suggest-msg');
+            
+            if (input.value.trim()) {
+                msg.textContent = `Thank you for suggesting "${input.value.trim()}"! We'll consider it for future development.`;
+                msg.className = 'mt-4 text-sm text-green-200';
+                input.value = '';
+                
+                setTimeout(() => {
+                    msg.textContent = '';
+                }, 5000);
+            } else {
+                msg.textContent = 'Please enter a tool suggestion.';
+                msg.className = 'mt-4 text-sm text-red-200';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('category-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCategoryModal();
+            }
+        });
+    </script>
+    
+    <!-- Load the modular layout system -->
+    <script src="assets/js/layout.js"></script>
+</body>
+</html>
