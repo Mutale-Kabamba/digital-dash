@@ -245,17 +245,24 @@ class LayoutManager {
                 const mobileMenu = document.getElementById('mobile-menu');
                 if (mobileMenu) {
                     mobileMenu.classList.toggle('hidden');
+                    // Also toggle fallback class for when external CSS fails
+                    mobileMenu.classList.toggle('show');
                 }
             };
         }
+        
+        // Check if Font Awesome icons are loaded, if not show fallback icons
+        this.setupIconFallbacks();
         
         // Close mobile menu when clicking outside
         document.addEventListener('click', (event) => {
             const navbar = document.querySelector('nav');
             const mobileMenu = document.getElementById('mobile-menu');
             
-            if (navbar && mobileMenu && !navbar.contains(event.target) && !mobileMenu.classList.contains('hidden')) {
+            if (navbar && mobileMenu && !navbar.contains(event.target) && 
+                !mobileMenu.classList.contains('hidden')) {
                 mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('show');
             }
         });
         
@@ -266,8 +273,59 @@ class LayoutManager {
                 const mobileMenu = document.getElementById('mobile-menu');
                 if (mobileMenu) {
                     mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('show');
                 }
             });
+        });
+    }
+    
+    /**
+     * Setup fallback icons when Font Awesome fails to load
+     */
+    setupIconFallbacks() {
+        // Check if Font Awesome is loaded by trying to create an icon
+        const testIcon = document.createElement('i');
+        testIcon.className = 'fa-solid fa-bolt';
+        document.body.appendChild(testIcon);
+        
+        // Small delay to let Font Awesome load
+        setTimeout(() => {
+            const computed = window.getComputedStyle(testIcon);
+            const isFontAwesomeLoaded = computed.fontFamily.includes('Font Awesome') || 
+                                      computed.content !== 'none' ||
+                                      testIcon.offsetWidth > 0;
+            
+            document.body.removeChild(testIcon);
+            
+            if (!isFontAwesomeLoaded) {
+                console.log('Font Awesome not loaded, showing fallback icons');
+                this.showFallbackIcons();
+            }
+        }, 100);
+    }
+    
+    /**
+     * Show fallback icons when Font Awesome fails to load
+     */
+    showFallbackIcons() {
+        // Hide Font Awesome icons and show fallback icons
+        const faIcons = document.querySelectorAll('i.fa-solid, i.fa-brands, i.fa-regular');
+        faIcons.forEach(icon => {
+            if (icon.classList.contains('fa-bolt')) {
+                // Logo icon fallback
+                const fallback = icon.parentElement.querySelector('span');
+                if (fallback) {
+                    icon.style.display = 'none';
+                    fallback.style.display = 'inline';
+                }
+            } else if (icon.classList.contains('fa-bars')) {
+                // Hamburger menu icon fallback
+                const fallback = icon.parentElement.querySelector('.hamburger-icon-fallback');
+                if (fallback) {
+                    icon.style.display = 'none';
+                    fallback.style.display = 'inline-block';
+                }
+            }
         });
     }
     
@@ -279,30 +337,207 @@ class LayoutManager {
         const pathPrefix = isInToolsDir ? '../' : '';
         
         return `
-            <nav class="fixed top-0 left-0 right-0 bg-white/90 glassmorphism border-b border-gray-200/50 z-50 transition-all duration-300">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between items-center h-16">
+            <style>
+                /* Fallback CSS for responsive navigation when external CSS fails to load */
+                .mobile-menu-fallback {
+                    /* Default: hide desktop nav on mobile */
+                    display: none;
+                }
+
+                .mobile-btn-fallback {
+                    /* Default: show mobile button */
+                    display: inline-block;
+                }
+
+                .mobile-menu-container-fallback {
+                    /* Default: hide mobile menu */
+                    display: none;
+                }
+
+                .mobile-menu-container-fallback.show {
+                    /* Show mobile menu when toggled */
+                    display: block;
+                }
+
+                /* Hamburger icon fallback using CSS */
+                .hamburger-icon-fallback {
+                    display: inline-block;
+                    width: 20px;
+                    height: 16px;
+                    position: relative;
+                    cursor: pointer;
+                }
+
+                .hamburger-icon-fallback::before,
+                .hamburger-icon-fallback::after,
+                .hamburger-icon-fallback span {
+                    content: '';
+                    display: block;
+                    height: 2px;
+                    width: 100%;
+                    background-color: #4B5563;
+                    position: absolute;
+                    left: 0;
+                    transition: all 0.3s;
+                }
+
+                .hamburger-icon-fallback::before {
+                    top: 0;
+                }
+
+                .hamburger-icon-fallback span {
+                    top: 7px;
+                }
+
+                .hamburger-icon-fallback::after {
+                    top: 14px;
+                }
+
+                /* Desktop breakpoint */
+                @media (min-width: 768px) {
+                    .mobile-menu-fallback {
+                        /* Show desktop nav on desktop */
+                        display: flex !important;
+                    }
+                    
+                    .mobile-btn-fallback {
+                        /* Hide mobile button on desktop */
+                        display: none !important;
+                    }
+                    
+                    .mobile-menu-container-fallback {
+                        /* Always hide mobile menu on desktop */
+                        display: none !important;
+                    }
+                }
+
+                /* Base navigation styling fallback */
+                nav.nav-fallback {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background-color: rgba(255, 255, 255, 0.95);
+                    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+                    z-index: 50;
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                }
+
+                .nav-container-fallback {
+                    max-width: 80rem;
+                    margin: 0 auto;
+                    padding: 0 1rem;
+                }
+
+                .nav-header-fallback {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    height: 4rem;
+                }
+
+                .nav-logo-fallback {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    text-decoration: none;
+                    color: #111827;
+                    font-weight: 700;
+                    font-size: 1.25rem;
+                }
+
+                .nav-logo-icon-fallback {
+                    width: 2rem;
+                    height: 2rem;
+                    background: linear-gradient(to right, #2563eb, #7c3aed);
+                    border-radius: 0.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 0.875rem;
+                }
+
+                .nav-links-fallback {
+                    display: flex;
+                    align-items: center;
+                    gap: 2rem;
+                }
+
+                .nav-links-fallback a {
+                    color: #4B5563;
+                    font-weight: 500;
+                    text-decoration: none;
+                    transition: color 0.2s;
+                }
+
+                .nav-links-fallback a:hover {
+                    color: #2563eb;
+                }
+
+                .mobile-nav-fallback {
+                    background-color: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                    border-top: 1px solid rgba(229, 231, 235, 0.5);
+                    padding: 0.5rem;
+                }
+
+                .mobile-nav-fallback a {
+                    display: block;
+                    padding: 0.75rem;
+                    color: #4B5563;
+                    font-weight: 500;
+                    text-decoration: none;
+                    transition: color 0.2s;
+                }
+
+                .mobile-nav-fallback a:hover {
+                    color: #2563eb;
+                }
+
+                .mobile-btn-fallback {
+                    background: none;
+                    border: none;
+                    color: #4B5563;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    transition: color 0.2s;
+                }
+
+                .mobile-btn-fallback:hover {
+                    color: #111827;
+                }
+            </style>
+            <nav class="fixed top-0 left-0 right-0 bg-white/90 glassmorphism border-b border-gray-200/50 z-50 transition-all duration-300 nav-fallback">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 nav-container-fallback">
+                    <div class="flex justify-between items-center h-16 nav-header-fallback">
                         <div class="flex items-center">
-                            <a href="${pathPrefix}home.html" class="flex items-center space-x-2" id="logo-link">
-                                <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <a href="${pathPrefix}home.html" class="flex items-center space-x-2 nav-logo-fallback" id="logo-link">
+                                <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center nav-logo-icon-fallback">
                                     <i class="fa-solid fa-bolt text-white text-sm"></i>
+                                    <span style="display: none;">⚡</span>
                                 </div>
                                 <span class="font-display font-bold text-xl text-gray-900">Digital Dash</span>
                             </a>
                         </div>
-                        <div class="hidden md:flex items-center space-x-8">
+                        <div class="hidden md:flex items-center space-x-8 mobile-menu-fallback nav-links-fallback">
                             <a href="${pathPrefix}home.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="home">Home</a>
                             <a href="${pathPrefix}dash.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="dash">Tools</a>
                             <a href="${pathPrefix}sme.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="sme">Business Tools</a>
                             <a href="${pathPrefix}returns.html" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium" data-page="returns">Compliance</a>
                         </div>
-                        <div class="md:hidden">
-                            <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <div class="md:hidden mobile-btn-fallback">
+                            <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-gray-900 focus:outline-none mobile-btn-fallback">
                                 <i class="fa-solid fa-bars text-xl"></i>
+                                <span class="hamburger-icon-fallback" style="display: none;">
+                                    <span></span>
+                                </span>
                             </button>
                         </div>
                     </div>
-                    <div id="mobile-menu" class="hidden md:hidden bg-white/95 glassmorphism border-t border-gray-200/50">
+                    <div id="mobile-menu" class="hidden md:hidden bg-white/95 glassmorphism border-t border-gray-200/50 mobile-menu-container-fallback mobile-nav-fallback">
                         <div class="px-2 pt-2 pb-3 space-y-1">
                             <a href="${pathPrefix}home.html" class="mobile-nav-link block px-3 py-2 text-gray-600 hover:text-blue-600 font-medium" data-page="home">Home</a>
                             <a href="${pathPrefix}dash.html" class="mobile-nav-link block px-3 py-2 text-gray-600 hover:text-blue-600 font-medium" data-page="dash">Tools</a>
@@ -400,6 +635,8 @@ window.toggleMobileMenu = function() {
     const mobileMenu = document.getElementById('mobile-menu');
     if (mobileMenu) {
         mobileMenu.classList.toggle('hidden');
+        // Also toggle fallback class for when external CSS fails
+        mobileMenu.classList.toggle('show');
     }
 };
 
