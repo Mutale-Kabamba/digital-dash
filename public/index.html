@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Digital Dash offers simple digital tools for Zambian users to handle compliance, business, and personal tasks without complex software."
+    />
+    <meta name="keywords" content="Zambia, Digital Tools, NHIMA, NAPSA, Returns, Compliance, Business Tools">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Digital Dash - Smart Tools for Everyday Tasks">
+    <meta property="og:description" content="Simple digital tools for Zambian users to handle compliance, business, and personal tasks.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://digital-dash.vercel.app">
+    <meta property="og:image" content="https://digital-dash.vercel.app/assets/images/og-image.jpg">
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <title>Digital Dash – Modern Tools for Digital Life</title>
+    
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .font-display {
+        font-family: 'Poppins', sans-serif;
+      }
+      .glassmorphism {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      
+      /* Custom animations */
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+      
+      /* Stats counter animation */
+      .stat-counter {
+        display: inline-block;
+        font-weight: 700;
+        color: #3b82f6;
+      }
+      
+      /* Tool card hover effects */
+      .tool-card {
+        transition: all 0.3s ease;
+      }
+      .tool-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>

@@ -4,7 +4,7 @@
 
 ## 🚀 Live Demo
 
-Visit the live application: [Digital Dash](https://digital-dash.vercel.app) (Replace with your actual URL once deployed)
+Visit the live application: [Digital Dash](https://digital-dash.vercel.app)
 
 ## 📋 Overview
 
@@ -12,8 +12,10 @@ Digital Dash offers focused tools that eliminate the need for complex software o
 
 ### Currently Available Tools
 
-- ✅ **NHIMA CSV File Generator** - Create National Health Insurance Management Authority returns
-- ✅ **NAPSA CSV File Generator** - Generate National Pension Scheme Authority submissions
+- ✅ **NAPSA XLSX Generator** - Create National Pension Scheme Authority employee contribution files
+- ✅ **NHIMA XLSX Generator** - Generate National Health Insurance Management Authority employee data files
+- ✅ **Invoice Generator** - Create professional invoices and receipts for your business
+- ✅ **Interactive Dashboard** - Access all your tools from one central location
 
 ### Coming Soon
 
@@ -21,24 +23,29 @@ Digital Dash offers focused tools that eliminate the need for complex software o
 - **VAT Return Form Builder**
 - **TIN Validator**
 - **CV Builder**
-- **Business Quotation/Receipt Generator**
+- **Business Quotation Generator**
 - And more!
 
 ## 🔍 Key Features
 
 - **No Installation Required**: Works in any modern browser
-- **Mobile Friendly**: Use on any device
-- **Privacy-Focused**: Your data stays in your browser
+- **Mobile Friendly**: Responsive design works on any device
+- **Privacy-Focused**: Your data stays in your browser - no server storage
 - **Beginner-Friendly**: Simple interfaces with built-in guidance
-- **Zambia-Focused**: Tailored for Zambian compliance needs
+- **Zambia-Focused**: Tailored for Zambian compliance and business needs
+- **Real-time Calculations**: Automatic calculations for contributions and totals
+- **Draft Saving**: Save your work locally and resume later
+- **Export Functionality**: Generate XLSX files and printable PDFs
 
 ## 🛠️ Technology Stack
 
-- HTML5, CSS3, JavaScript
-- Browser LocalStorage for saving drafts
-- SheetJS library for Excel file generation
-- Flatpickr for date selection
-- FontAwesome for icons
+- **React 19** with TypeScript for modern, type-safe development
+- **React Router** for seamless navigation
+- **Tailwind CSS** for responsive styling
+- **React DatePicker** for intuitive date selection
+- **SheetJS (XLSX)** library for Excel file generation
+- **FontAwesome** for icons
+- **Vercel** for hosting and deployment
 
 ## 📱 Screenshots
 
